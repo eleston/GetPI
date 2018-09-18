@@ -1,5 +1,6 @@
 
-import java.util.Random;
+import java.util.ArrayList;
+
 import java.util.Scanner;
 
 /*
@@ -13,52 +14,42 @@ import java.util.Scanner;
  * @author emanuelleston
  */
 public class main {
-
+    
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
-        // TODO code application logic here
-     System.out.println("introduza numero de pontos ");
-     Scanner pi = new Scanner(System.in);
-     int numberPoints = pi.nextInt();
-     aproxiPi(numberPoints);
-    }
-    public static void  aproxiPi(int numberPoints)
-    {
-        //VARIAVEIS INTERMEDIAS
-           
-           double inCirclePoints=0;
-           double outCirclePoints=0;
-           Ponto [] pontos = new Ponto[numberPoints];
-           
-        //VARIAVEIS INTERMEDIAS
-        
-        //TODO
-        
-            // Gerar pontos (criar ponto a medida que se itera)
-                for(int i=0; i <numberPoints-1;i++){
-                    double x = Math.random()*1.0;
-                    double y = Math.random()*1.0;
-                  pontos[i]= new Ponto(x,y);
-                  if(pontos[i].inCircle())
-                  {
-                      inCirclePoints++;
-                  }
-                  else{
-                      outCirclePoints++;
-                  }
-                }
-            // Gerar pontos GERA 1000 pontos (x,y)
-        
-        
-        //TODO
-        
-        //OUTPUT
-        System.out.println("Points:"+numberPoints);
-        System.out.println("Points within circle:"+ inCirclePoints);
-        System.out.println("Pi estimation:"+ 4*(inCirclePoints/numberPoints));
-        //OUTPUT
-    }
     
+    
+    public static void main(String[] args) throws InterruptedException {
+        // TODO code application logic here
+           // INPUT   
+
+           System.out.println("introduza numero de pontos ");
+           Scanner pi = new Scanner(System.in);
+           int numberPoints = pi.nextInt();
+           //INPUT
+           
+           // GERAR THREADS
+           System.out.println("Numero de threads que deseja");
+           Scanner nthreads= new Scanner(System.in);
+           int numeroThreads=  nthreads.nextInt(); //4
+           
+            ArrayList<Double> pis =new ArrayList<>(numeroThreads);
+           int pontosPorThread =Math.round(numberPoints/numeroThreads);//1000/4 == numero de pontos por cada thread
+           
+           Thread  []setOfThreads = new Thread[numeroThreads];
+           for (int i=0 ; i <numeroThreads;i++){
+               
+                setOfThreads[i]= new Thread(new MyRunners(pontosPorThread,pis),"My Thread nr"+i);//CRIAR THREAD
+                setOfThreads[i].start();//INICIAR THREAD
+           }
+           
+           
+           Thread resthread = new Thread(new ResultThread(numberPoints, pis));
+         
+           resthread.start();
+
+           //GERAR THREADS
+    }
+   
 }
